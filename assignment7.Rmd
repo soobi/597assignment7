@@ -18,28 +18,28 @@ library(readxl)
     
     
 ```{r, first dataset}
-xmart <- read.csv("xmart.csv")
+mortality <- read.csv("data/xmart.csv")
 
 ##Removing extra spaces
-xmart[,3] <-gsub(" ","", xmart[,3]) 
+mortality[,3] <-gsub(" ","", xmart[,3]) 
 
 ##Renaming colnames for later
-names(xmart) <- c("Country","Year","mm_ratio","births_attended")
+names(mortality) <- c("Country","Year","mm_ratio","births_attended")
 
 ##Extracting bounds
-xmart$lower_bound <- str_split_fixed(str_extract(xmart[,3],"\\[[ 0-9 -]+\\]"), "-", 2)[,1]
-xmart$upper_bound <- str_split_fixed(str_extract(xmart[,3],"\\[[ 0-9 -]+\\]"), "-", 2)[,2]
+mortality$lower_bound <- str_split_fixed(str_extract(mortality[,3],"\\[[ 0-9 -]+\\]"), "-", 2)[,1]
+mortality$upper_bound <- str_split_fixed(str_extract(mortality[,3],"\\[[ 0-9 -]+\\]"), "-", 2)[,2]
 
 ##Removing brackets
-xmart$lower_bound <- as.integer(gsub("\\[", "", xmart$lower_bound))
-xmart$upper_bound <- as.integer(gsub("\\]","", xmart$upper_bound))
+mortality$lower_bound <- as.integer(gsub("\\[", "", mortality$lower_bound))
+mortality$upper_bound <- as.integer(gsub("\\]","", mortality$upper_bound))
 
 ##Removing bounds from col3
-xmart[,3] <- as.integer(gsub("\\[[ 0-9 -]+\\]", "", xmart[,3]))
+mortality[,3] <- as.integer(gsub("\\[[ 0-9 -]+\\]", "", mortality[,3]))
 ```
 
 ```{r, second dataset}
-gni <- read.csv("WHS9_93.csv", skip=1, as.is = TRUE, check.names = FALSE)
+gni <- read.csv("data/WHS9_93.csv", skip=1, as.is = TRUE, check.names = FALSE)
 
 ##Removing extra spaces from & changing class of 2013 to integer
 gni[,2] <-as.integer(gsub(" ","", gni[,2]))
@@ -55,7 +55,7 @@ gni <- gni %>%
 gni1 <- gni %>% filter(!is.na(gni$income))
 
 ##Merging the two files, retaining only rows which have per capita income & maternal mortality or attended births
-merged <- merge(gni,xmart) %>%
+merged <- merge(gni,mortality) %>%
   filter(!is.na(income)) %>%
   filter(!is.na(mm_ratio) | !is.na(births_attended))
 
@@ -64,9 +64,16 @@ merged <- merge(gni,xmart) %>%
 - Make a two polished  and informative graphs, one relating income to maternal mortality and the other relating income to percentage attended births
 ```{r, graphs}
 
+```
+
+
+```{r saving file}
+write_csv(income.mortality, "data/income.mortality.csv")
 
 ```
-- Save a csv file with the merged, cleaned, and tidy data, using a suitable name of your choosing in the data folder.
-
 - Use the country_choropleth() function in the choroplethr package to make a world map of maternal mortality, using the most recent year for each country in the merged dataset you created. The defaults of the function will be fine; no need to tune up the plot. You can read the help file to see how the data must be formatted; you may need to rename the countries from the dataset that you've created.
 - All of your steps, other than downloading the files, should be contained in a single R Markdown file that will run in the repo directory. Be sure to describe your steps
+
+```{r, choropleth}
+
+```
