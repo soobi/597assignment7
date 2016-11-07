@@ -37,31 +37,16 @@ xmart[,3] <- as.integer(gsub("\\[[ 0-9 -]+\\]", "", xmart[,3]))
 ##Change col names?
 
 ```
-    
-and store it in a data directory in your project repo. (You can read about the data  at http://apps.who.int/gho/data/view.main.SDG31v?lang=en )
-- Although the data is tidy, it needs cleaning. Notice that spaces are used instead of commas in numbers. Turn the numbers for maternal mortality inside square brackets into two new variables, lower_bound and upper_bound
-
 
 ```{r}
-gni <- read.csv("WHS9_93.csv",header = TRUE, skip=1)
+gni <- read.csv("WHS9_93.csv", skip=1, as.is = TRUE, check.names = FALSE)
 
+##Removing extra spaces from & changing class of 2013 to integer
+gni[,2] <-as.integer(gsub(" ","", gni[,2]))
 
-##Tidy data for only one entry per country per year?? spread
-## Keep only integer from each col header
-
-##Removing extra spaces, noticed some in 2013
-gni[,2:24] <-gsub(" ","", gni[,2:24])
-
-
-##Need to change class of col2
-
-
+##Tidying data: Using gather to have one entry per country per year
 gni <- gni %>%
-  gather(year, value, 2:24)
-
-
-
-
+  gather(year, value, 2:25)
 ```
 - Download the gross national income data from http://apps.who.int/gho/data/node.main.GNI107?lang=en (Download the complete data as a "CVS table", storing it in the data folder).
 - Tidy this data, so that there is one entry per country per year
