@@ -17,7 +17,7 @@ library(readxl)
 
     
     
-```{r}
+```{r, first dataset}
 xmart <- read.csv("xmart.csv")
 
 ##Removing extra spaces
@@ -36,12 +36,9 @@ xmart$upper_bound <- as.integer(gsub("\\]","", xmart$upper_bound))
 
 ##Removing bounds from col3
 xmart[,3] <- as.integer(gsub("\\[[ 0-9 -]+\\]", "", xmart[,3]))
-
-
-
 ```
 
-```{r}
+```{r, second dataset}
 gni <- read.csv("WHS9_93.csv", skip=1, as.is = TRUE, check.names = FALSE)
 
 ##Removing extra spaces from & changing class of 2013 to integer
@@ -52,14 +49,10 @@ gni <- gni %>%
   gather(Year, income, 2:25)
 ```
 
-```{r}
+```{r, merging data}
 
 ##Retaining only rows which have per capita income
 gni1 <- gni %>% filter(!is.na(gni$income))
-
-##Merging the filtered table & 
-gnixmart <- merge(gni1,xmart)
-
 
 ##Merging the two files, retaining only rows which have per capita income & maternal mortality or attended births
 merged <- merge(gni,xmart) %>%
@@ -67,8 +60,13 @@ merged <- merge(gni,xmart) %>%
   filter(!is.na(mm_ratio) | !is.na(births_attended))
 
 ```
-- Merge the two files by country and year, retaining only rows for which you have per capita income and either maternal mortality or percentage attended births
+
 - Make a two polished  and informative graphs, one relating income to maternal mortality and the other relating income to percentage attended births
+```{r, graphs}
+
+
+```
 - Save a csv file with the merged, cleaned, and tidy data, using a suitable name of your choosing in the data folder.
+
 - Use the country_choropleth() function in the choroplethr package to make a world map of maternal mortality, using the most recent year for each country in the merged dataset you created. The defaults of the function will be fine; no need to tune up the plot. You can read the help file to see how the data must be formatted; you may need to rename the countries from the dataset that you've created.
 - All of your steps, other than downloading the files, should be contained in a single R Markdown file that will run in the repo directory. Be sure to describe your steps
