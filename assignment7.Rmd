@@ -62,21 +62,26 @@ merged <- merge(gni,mortality) %>%
 
 - Make a two polished  and informative graphs, one relating income to maternal mortality and the other relating income to percentage attended births
 ```{r, graphs}
-## Box plots?
+
+##Need to change class of Year, messing up the plot
 plot1 <- merged %>%
-  ggplot(.,aes(x=income, y=mm_ratio)) + geom_point() + geom_line() + theme_minimal() + scale_color_ptol() + labs(title ="Title", y="y", x="x", color = "color")
+  ggplot(aes(x=mm_ratio, y=income, color = Year)) + geom_point() + theme_minimal() + scale_color_ptol() + labs(title ="Maternal Mortality Versus Gross National Income", y="Gross National Income", x="Maternal Mortality Ratio", color = "Year")
 plot1
 
+plot2 <- merged %>%
+  ggplot(aes(x=births_attended, y=income, color = Year)) + geom_point() + theme_minimal() + scale_color_ptol() + labs(title ="Attended Births vs Gross National Income", y="Gross National Income", x="% of Attended Births", color = "Year")
+plot2
+
+
+##Want to add some country names
 
 ```
 
 
 ```{r saving file}
 write_csv(merged, "data/income.mortality.csv")
-
 ```
-- Use the country_choropleth() function in the choroplethr package to make a world map of maternal mortality, using the most recent year for each country in the merged dataset you created. The defaults of the function will be fine; no need to tune up the plot. You can read the help file to see how the data must be formatted; you may need to rename the countries from the dataset that you've created.
-- All of your steps, other than downloading the files, should be contained in a single R Markdown file that will run in the repo directory. Be sure to describe your steps
+
 
 ```{r, choropleth}
 
@@ -91,8 +96,8 @@ data(country.regions)
 missing <- anti_join(choromerge, country.regions, by =c("Country" = "region"))
 
 
-## ABSOLUTELY HORRIBLE WAY TO DO THIS BUT UNTIL I MANAGE.....
-## Try matching part of strings from each table to rename??
+## ABSOLUTELY HORRIBLE WAY TO DO THIS BUT UNTIL I MANAGE OTHERWISE.....
+## Should try matching part of strings of country name from each table to rename??
 choromerge[8,1] = "the bahamas"
 choromerge[173,1] = "vietnam"
 choromerge[166,1] = "united kingdom"
@@ -107,7 +112,5 @@ choromerge %>%
   country_choropleth(title ="title")
 
 ##Choropleth is saying that I'm missing more regions than are showing up in the missing dataframe??
-
-
 
 ```
