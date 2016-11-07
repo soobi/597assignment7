@@ -63,28 +63,28 @@ merged <- merge(gni,mortality) %>%
 - Make a two polished  and informative graphs, one relating income to maternal mortality and the other relating income to percentage attended births
 ```{r, graphs}
 
-##Need to change class of Year, messing up the plot
+## Plotting Maternal Mortality vs Income
 plot1 <- merged %>%
   ggplot(aes(x=mm_ratio, y=income, color = Year)) + geom_point() + theme_minimal() + scale_color_ptol() + labs(title ="Maternal Mortality Versus Gross National Income", y="Gross National Income", x="Maternal Mortality Ratio", color = "Year")
 plot1
 
+## Plotting % of Attended Births vs Income
 plot2 <- merged %>%
   ggplot(aes(x=births_attended, y=income, color = Year)) + geom_point() + theme_minimal() + scale_color_ptol() + labs(title ="Attended Births vs Gross National Income", y="Gross National Income", x="% of Attended Births", color = "Year")
 plot2
 
-
-##Want to add some country names
-
+##Want to identify some countries in the plots, will do later
 ```
 
 
 ```{r saving file}
+
+## Saving merged & cleaned dataframe in data folder
 write_csv(merged, "data/income.mortality.csv")
 ```
 
 
 ```{r, choropleth}
-
 ## Using aggregate to use most recent year for each country
 choromerge <- merge(merged,aggregate(Year ~ Country, merged, max))
 
@@ -95,9 +95,8 @@ choromerge[,1] <- str_to_lower(choromerge[,1])
 data(country.regions)
 missing <- anti_join(choromerge, country.regions, by =c("Country" = "region"))
 
-
-## ABSOLUTELY HORRIBLE WAY TO DO THIS BUT UNTIL I MANAGE OTHERWISE.....
-## Should try matching part of strings of country name from each table to rename??
+## ABSOLUTELY HORRIBLE WAY TO DO THIS BUT UNTIL I MANAGE OTHERWISE, renaming some of the countries to follow the correct format.....
+## Should be done by matching a section of characters between the two data frames and renaming the country names by the country.regions names -- I think. 
 choromerge[8,1] = "the bahamas"
 choromerge[173,1] = "vietnam"
 choromerge[166,1] = "united kingdom"
@@ -105,12 +104,12 @@ choromerge[172,1] = "venezuela"
 choromerge[155,1] = "east timor"
 choromerge[154,1] = "macedonia"
 
-  
+##Regardless of whether the country names match what is available in the country.regions dataframe -- choropleth is saying that I'm missing more regions than are showing up in the missing dataframe??
+
 ##Choropleth
 choromerge %>%
   dplyr::rename(value = mm_ratio, region = Country) %>%
   country_choropleth(title ="title")
 
-##Choropleth is saying that I'm missing more regions than are showing up in the missing dataframe??
 
 ```
