@@ -9,9 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(stringr)
-library(broom)
-library(rvest)
-library(readxl)
+library(choroplethr)
+library(choroplethrMaps)
 
 ```
 
@@ -80,5 +79,24 @@ write_csv(merged, "data/income.mortality.csv")
 - All of your steps, other than downloading the files, should be contained in a single R Markdown file that will run in the repo directory. Be sure to describe your steps
 
 ```{r, choropleth}
+
+## Using aggregate to use most recent year for each country
+choromerge <- merge(merged,aggregate(Year ~ Country, merged, max))
+
+## Changing region names to lower to match region requirements for choropleth
+choromerge[,1] <- str_to_lower(choromerge[,1])
+
+##Checking which countries do not match the proper format
+data(country.regions)
+missing <- anti_join(choromerge, country.regions, by =c("Country" = "region"))
+
+
+##Choropleth
+choromerge %>%
+  dplyr::rename(value = mm_ratio, region = Country) %>%
+  country_choropleth(title ="title")
+
+
+
 
 ```
