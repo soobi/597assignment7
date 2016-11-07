@@ -91,11 +91,22 @@ data(country.regions)
 missing <- anti_join(choromerge, country.regions, by =c("Country" = "region"))
 
 
+## ABSOLUTELY HORRIBLE WAY TO DO THIS BUT UNTIL I MANAGE.....
+## Try matching part of strings from each table to rename??
+choromerge[8,1] = "the bahamas"
+choromerge[173,1] = "vietnam"
+choromerge[166,1] = "united kingdom"
+choromerge[172,1] = "venezuela"
+choromerge[155,1] = "east timor"
+choromerge[154,1] = "macedonia"
+
+  
 ##Choropleth
 choromerge %>%
   dplyr::rename(value = mm_ratio, region = Country) %>%
   country_choropleth(title ="title")
 
+##Choropleth is saying that I'm missing more regions than are showing up in the missing dataframe??
 
 
 
