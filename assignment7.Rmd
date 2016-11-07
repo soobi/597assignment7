@@ -11,7 +11,7 @@ library(tidyverse)
 library(stringr)
 library(choroplethr)
 library(choroplethrMaps)
-
+library(ggthemes)
 ```
 
     
@@ -20,7 +20,7 @@ library(choroplethrMaps)
 mortality <- read.csv("data/xmart.csv")
 
 ##Removing extra spaces
-mortality[,3] <-gsub(" ","", xmart[,3]) 
+mortality[,3] <-gsub(" ","", mortality[,3]) 
 
 ##Renaming colnames for later
 names(mortality) <- c("Country","Year","mm_ratio","births_attended")
